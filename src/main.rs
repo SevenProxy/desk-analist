@@ -1,4 +1,9 @@
+/*
+ - Copyright @SevenProxy (github)
+*/
+
 mod app;
+mod layout;
 
 use app::App;
 
