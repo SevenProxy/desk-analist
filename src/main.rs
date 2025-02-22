@@ -4,6 +4,7 @@
 
 mod app;
 mod layout;
+mod components;
 
 use app::App;
 

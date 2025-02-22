@@ -12,7 +12,7 @@ extern "C" {
 pub fn app() -> Html {
   html! {
     <DashLayout>
-        <div>{"Hello World!"}</div>
+      <div>{"Hello World!"}</div>
     </DashLayout>
   }
 }

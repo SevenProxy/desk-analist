@@ -1,4 +1,5 @@
 use yew::prelude::*;
+use crate::components::navbar::NavabarRoot;
 
 #[derive(Properties, PartialEq)]
 pub struct PropsDashLayout {
@@ -18,9 +19,14 @@ impl Component for DashLayout  {
 
   fn view(&self, ctx: &Context<Self>) -> Html {
     html! {
-      <main>
-        <div>
-          { for ctx.props().children.iter() }
+      <main class="w-full h-full">
+        <div class="flex gap-2 items-top w-full h-full relative">
+          <NavabarRoot>
+            {"a"}
+          </NavabarRoot>
+          <div class="w-full z-20 bg-[--foreground]">
+            { for ctx.props().children.iter() }
+          </div>
         </div>
       </main>
     }
