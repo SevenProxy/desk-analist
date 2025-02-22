@@ -1,5 +1,6 @@
 use yew::prelude::*;
-use crate::components::navbar::NavabarRoot;
+use crate::components::navbar::{NavabarRoot, NavBarLogo, NavBarItems};
+use crate::components::header::{HeaderRoot, HeaderTitle};
 
 #[derive(Properties, PartialEq)]
 pub struct PropsDashLayout {
@@ -19,12 +20,16 @@ impl Component for DashLayout  {
 
   fn view(&self, ctx: &Context<Self>) -> Html {
     html! {
-      <main class="w-full h-full">
-        <div class="flex gap-2 items-top w-full h-full relative">
+      <main class="orbitron-font w-full h-full">
+        <div class="flex items-top w-full h-full relative">
           <NavabarRoot>
-            {"a"}
+            <NavBarLogo />
+            <NavBarItems />
           </NavabarRoot>
           <div class="w-full z-20 bg-[--foreground]">
+            <HeaderRoot>
+              <HeaderTitle text={"Dashboard"} />
+            </HeaderRoot>
             { for ctx.props().children.iter() }
           </div>
         </div>

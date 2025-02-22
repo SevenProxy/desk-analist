@@ -12,5 +12,14 @@
   :root {
     --background: #09090a;
     --foreground: #121214;
+    
+    --color: #9956f6;
+
+    --border-color: #323238;
   }
+}
+
+.orbitron-font {
+  font-family: "Orbitron", serif;
+  font-optical-sizing: auto;
 }
