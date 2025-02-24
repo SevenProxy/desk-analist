@@ -1,9 +1,9 @@
 use yew::prelude::*;
 use crate::ui::LogoType;
 
-pub struct NavBarLogo;
+pub struct NavbarLogo;
 
-impl Component for NavBarLogo {
+impl Component for NavbarLogo {
   type Message = ();
   type Properties = ();
 

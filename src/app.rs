@@ -12,7 +12,11 @@ extern "C" {
 pub fn app() -> Html {
   html! {
     <DashLayout>
-      <div>{"Hello World!"}</div>
+      <section class="text-white w-full h-full">
+        <div class="py-4 px-10 h-full">
+          {"aaaaaaaaaaa"}
+        </div>
+      </section>
     </DashLayout>
   }
 }

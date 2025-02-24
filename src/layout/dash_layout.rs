@@ -1,6 +1,7 @@
 use yew::prelude::*;
-use crate::components::navbar::{NavabarRoot, NavBarLogo, NavBarItems};
+use crate::components::navbar::{NavabarRoot, NavbarLogo, NavbarItem};
 use crate::components::header::{HeaderRoot, HeaderTitle};
+use crate::date::get_fetch_scam_list;
 
 #[derive(Properties, PartialEq)]
 pub struct PropsDashLayout {
@@ -19,12 +20,16 @@ impl Component for DashLayout  {
   }
 
   fn view(&self, ctx: &Context<Self>) -> Html {
+    let fetch_scam_list = get_fetch_scam_list();
+
     html! {
       <main class="orbitron-font w-full h-full">
         <div class="flex items-top w-full h-full relative">
           <NavabarRoot>
-            <NavBarLogo />
-            <NavBarItems />
+            <NavbarLogo />
+            { for fetch_scam_list.iter().map(|list| html! {
+              <NavbarItem list={list.clone()} />
+            })}
           </NavabarRoot>
           <div class="w-full z-20 bg-[--foreground]">
             <HeaderRoot>

@@ -6,6 +6,7 @@ mod app;
 mod layout;
 mod components;
 mod ui;
+mod date;
 
 use app::App;
 
