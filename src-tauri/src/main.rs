@@ -2,5 +2,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    desk_analist_lib::run()
+  desk_analist_lib::run()
 }
