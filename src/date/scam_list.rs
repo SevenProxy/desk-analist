@@ -26,7 +26,16 @@ pub fn get_fetch_scam_list() -> Vec<List> {
           name: String::from("temp"),
         },
         Item {
-          name: String::from("system32")
+          name: String::from("local temp"),
+        },
+        Item {
+          name: String::from("ProgramData"),
+        },
+        Item {
+          name: String::from("Public")
+        },
+        Item {
+          name: String::from("Roaming")
         }
       ]
     }

@@ -35,7 +35,11 @@ impl Component for DashLayout  {
             <HeaderRoot>
               <HeaderTitle text={"Dashboard"} />
             </HeaderRoot>
-            { for ctx.props().children.iter() }
+            <slot class="text-white w-full h-full">
+              <div class="py-4 px-10 h-full">
+                { for ctx.props().children.iter() }
+              </div>
+            </slot>
           </div>
         </div>
       </main>
