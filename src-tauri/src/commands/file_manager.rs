@@ -1,20 +1,29 @@
-use std::fs::{self, ReadDir};
-use std::io::Error;
+use std::fs::{self};
 use std::path::Path;
 
+#[derive(serde::Serialize)]
+pub struct DirEntry {
+  name: String,
+  is_dir: bool,
+}
+
 #[tauri::command]
-pub fn list_files() -> Result<Vec<String>, String> {
+pub fn list_files() -> Result<Vec<DirEntry>, String> {
   let path: &Path = Path::new("C:\\proxy\\Documents");
+  if !path.exists() || !path.is_dir() {
+    return Err("O caminho fornecido não é um diretório válido.".to_string());
+  }
 
-  let entries: ReadDir = fs::read_dir(path)
-    .map_err(|e: Error| format!("Erro ao ler diretório: {}", e))?;
+  let mut entries = Vec::new();
 
-  let files: Vec<String> = entries
-    .filter_map(|entry| entry.ok())
-    .filter_map(|entry| entry.file_name().into_string().ok())
-    .collect();
+  for entry in fs::read_dir(path).map_err(|e| e.to_string()) ? {
+    let entry = entry.map_err(|e| e.to_string())?;
+    let path = entry.path();
+    let name = path.file_name().unwrap().to_string_lossy().to_string();
+    let is_dir = path.is_dir();
 
-  Ok(vec![
-    String::from("aaaa")
-  ])
+    entries.push(DirEntry { name, is_dir });
+  }
+
+  Ok(entries)
 }
