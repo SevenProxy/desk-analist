@@ -1,6 +1,8 @@
+use serde_wasm_bindgen::from_value;
 use yew::prelude::*;
 use wasm_bindgen_futures::spawn_local;
-use wasm_bindgen::{JsValue, prelude::wasm_bindgen, JsCast};
+use wasm_bindgen::{JsValue, prelude::wasm_bindgen};
+use serde::{Deserialize, Serialize};
 
 #[wasm_bindgen]
 extern "C" {
@@ -8,13 +10,21 @@ extern "C" {
   async fn invoke(cmd: &str, args: JsValue) -> JsValue;
 }
 
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct DirEntry {
+  name: String,
+  is_dir: bool,
+}
+
 pub enum Msg {
   FetchFiles,
-  FilesFetched(Result<Vec<String>, String>),
+  FilesFetched(Result<Vec<DirEntry>, String>),
 }
 
 pub struct ConsolePre {
-  files: Vec<String>,
+  files: Vec<DirEntry>,
+  messages: String,
 }
 
 impl Component for ConsolePre {
@@ -22,7 +32,7 @@ impl Component for ConsolePre {
   type Properties = ();
 
   fn create(_: &Context<Self>) -> Self {
-    Self { files: vec![] }
+    Self { files: Vec::new(), messages: String::new() }
   }
 
   fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
@@ -30,16 +40,11 @@ impl Component for ConsolePre {
       Msg::FetchFiles => {
         let link = ctx.link().clone();
         spawn_local(async move {
-          let result: Result<Vec<String>, String> = {
+          let result: Result<Vec<DirEntry>, String> = {
             let response = invoke("list_files", JsValue::NULL).await;
-            if let Ok(files) = response.dyn_into::<js_sys::Array>() {
-              let files: Vec<String> = files
-                .iter()
-                .filter_map(|entry| entry.as_string())
-                .collect();
-              Ok(files)
-            } else {
-              Err("Falha ao obter arquivos".to_string())
+            match from_value::<Vec<DirEntry>>(response) {
+              Ok(files) => Ok(files),
+              Err(err) => Err(format!("Falha ao deserializar arquivos: {:?}", err))
             }
           };
           link.send_message(Msg::FilesFetched(result));
@@ -48,9 +53,11 @@ impl Component for ConsolePre {
       }
       Msg::FilesFetched(Ok(files)) => {
         self.files = files;
+        self.messages = "Arquivos listados com sucesso.".to_string();
         true
       }
-      Msg::FilesFetched(Err(_)) => {
+      Msg::FilesFetched(Err(err)) => {
+        self.messages = err;
         false
       }
     }
@@ -73,13 +80,13 @@ impl Component for ConsolePre {
                 </div>
               },
               false => html! {
-                <div>
-                  <div class="flex items-center justify-between mb-1">
-                    <div>
+                { for self.files.iter().map(|file| html! {
+                  <div class="w-full">
+                    <div class="flex items-center justify-between mb-1">
                       <div class="flex items-center gap-2">
                         <span>{"#1"}</span>
                         <span class="text-[--color]">{"⏱️ 10/10/2025 | "}</span>
-                        <span>{"File name"}</span>
+                        <span>{ format!("{}", &file.name) }</span>
                       </div>
                       <div class="bg-green-600 px-2 rounded flex items-center gap-2">
                         <span>
@@ -99,12 +106,13 @@ impl Component for ConsolePre {
                         <span class="">{"68%"}</span>
                       </div>
                     </div>
+                    <div class="flex items-center">
+                      <p class="text-zinc-300">{"Microsoft Windows sha256 quarta-feira, 10 de fevereiro"}</p>
+                      <span class="h-[3px] w-full my-2 rounded-full bg-[--color]"></span>
+                    </div>
                   </div>
-                  <div class="flex items-center">
-                    <p class="text-zinc-300">{"Microsoft Windows sha256 quarta-feira, 10 de fevereiro"}</p>
-                    <span class="h-[3px] w-full my-2 rounded-full bg-[--color]"></span>
-                  </div>
-                </div>
+                  
+                }) }
               }
             }}
             

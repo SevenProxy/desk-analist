@@ -1,7 +1,7 @@
 use std::fs::{self};
 use std::path::Path;
 
-#[derive(serde::Serialize)]
+#[derive(serde::Serialize, Debug)]
 pub struct DirEntry {
   name: String,
   is_dir: bool,
@@ -9,14 +9,17 @@ pub struct DirEntry {
 
 #[tauri::command]
 pub fn list_files() -> Result<Vec<DirEntry>, String> {
-  let path: &Path = Path::new("C:\\proxy\\Documents");
+  let path: &Path = Path::new("C:\\Windows\\Temp");
   if !path.exists() || !path.is_dir() {
     return Err("O caminho fornecido não é um diretório válido.".to_string());
   }
 
   let mut entries = Vec::new();
 
-  for entry in fs::read_dir(path).map_err(|e| e.to_string()) ? {
+  for entry in fs::read_dir(path).map_err(|e| {
+    println!("Erro ao ler o diretório: {}", e);
+    e.to_string()
+  }) ? {
     let entry = entry.map_err(|e| e.to_string())?;
     let path = entry.path();
     let name = path.file_name().unwrap().to_string_lossy().to_string();
@@ -24,6 +27,5 @@ pub fn list_files() -> Result<Vec<DirEntry>, String> {
 
     entries.push(DirEntry { name, is_dir });
   }
-
   Ok(entries)
 }
